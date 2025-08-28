@@ -10,7 +10,8 @@
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
     "migration:generate": "yarn typeorm migration:generate ./src/migrations/$npm_config_name -d src/data-source.ts",
     "migration:run": "yarn typeorm migration:run -d src/data-source.ts",
-    "migration:revert": "yarn typeorm migration:revert -d src/data-source.ts"
+    "migration:revert": "yarn typeorm migration:revert -d src/data-source.ts",
+    "test": "jest"
   },
   "dependencies": {
     "@apollo/server": "^4.9.0",

@@ -26,6 +26,7 @@
     "noFallthroughCasesInSwitch": false
   },
   "include": [
-    "src"
+    "src",
+    "__test__"
   ]
 }
