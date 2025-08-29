@@ -1,49 +1,47 @@
 import { AuthorsRepository } from '../../src/modules/author/authors.repository';
 import { Author } from '../../src/modules/author/entities/author.entity';
-import { DataSource } from 'typeorm';
+import { Repository } from 'typeorm';
 
 describe('AuthorsRepository (unit)', () => {
     let repo: AuthorsRepository;
-    let mockQueryBuilder: any;
+    let mockRepo: jest.Mocked<Repository<Author>>;
 
     beforeEach(() => {
-        mockQueryBuilder = {
-            leftJoinAndSelect: jest.fn().mockReturnThis(),
-            where: jest.fn().mockReturnThis(),
-            getMany: jest.fn(),
-            getOne: jest.fn(),
-        };
+        mockRepo = {
+            find: jest.fn(),
+            findOne: jest.fn(),
+            create: jest.fn(),
+            save: jest.fn(),
+            update: jest.fn(),
+            delete: jest.fn(),
+        } as any;
 
-        const mockDataSource = {
-            createEntityManager: jest.fn(),
-        } as any as DataSource;
-
-        repo = new AuthorsRepository(mockDataSource);
-        repo.createQueryBuilder = jest.fn(() => mockQueryBuilder);
+        // mocking the repo storage
+        repo = new AuthorsRepository(mockRepo);
+        // manual mock to replace the @InjectRepository in functional code,
+        (repo as any).authorRepo = mockRepo;
     });
 
-    it('findWithBooks llama correctamente a QueryBuilder y devuelve autores', async () => {
+    it('findWithBooks llama correctamente a find con relaciones', async () => {
         const expected = [{ id: 1, name: 'Author 1' }] as Author[];
-        mockQueryBuilder.getMany.mockResolvedValue(expected);
+        mockRepo.find.mockResolvedValue(expected);
 
         const result = await repo.findWithBooks();
 
-        expect(repo.createQueryBuilder).toHaveBeenCalledWith('author');
-        expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenCalledWith('author.books', 'book');
-        expect(mockQueryBuilder.getMany).toHaveBeenCalled();
+        expect(mockRepo.find).toHaveBeenCalledWith({ relations: ['books'] });
         expect(result).toEqual(expected);
     });
 
-    it('findOneWithRelations llama correctamente a QueryBuilder, where y devuelve un autor', async () => {
+    it('findOneWithRelations llama correctamente a findOne con where y relaciones', async () => {
         const expected = { id: 1, name: 'Author 1' } as Author;
-        mockQueryBuilder.getOne.mockResolvedValue(expected);
+        mockRepo.findOne.mockResolvedValue(expected);
 
         const result = await repo.findOneWithRelations(1);
 
-        expect(repo.createQueryBuilder).toHaveBeenCalledWith('author');
-        expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenCalledWith('author.books', 'book');
-        expect(mockQueryBuilder.where).toHaveBeenCalledWith('author.id = :id', { id: 1 });
-        expect(mockQueryBuilder.getOne).toHaveBeenCalled();
+        expect(mockRepo.findOne).toHaveBeenCalledWith({
+            where: { id: 1 },
+            relations: ['books'],
+        });
         expect(result).toEqual(expected);
     });
 });
