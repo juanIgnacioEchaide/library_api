@@ -4,7 +4,6 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
-import { join } from 'path';
 import { AppResolver } from './modules/shared/query-root';
 import { BooksModule } from './modules/books/books.module';
 import { AuthorsModule } from './modules/author/authors.module';
