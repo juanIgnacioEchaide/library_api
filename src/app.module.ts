@@ -8,6 +8,7 @@ import { AppResolver } from './modules/shared/query-root';
 import { BooksModule } from './modules/books/books.module';
 import { AuthorsModule } from './modules/author/authors.module';
 import { PublisherModule } from './modules/publisher/publisher.module';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -23,7 +24,7 @@ import { PublisherModule } from './modules/publisher/publisher.module';
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      autoSchemaFile: true,
+      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       playground: true,
     }),
     BooksModule,

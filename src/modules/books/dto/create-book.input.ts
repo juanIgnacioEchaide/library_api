@@ -1,4 +1,4 @@
-import { InputType, Field, Int } from '@nestjs/graphql';
+import { InputType, Field, Int } from "@nestjs/graphql";
 
 @InputType()
 export class CreateBookInput {
@@ -7,4 +7,13 @@ export class CreateBookInput {
 
     @Field(() => Int)
     year: number;
+
+    @Field()
+    isbn: string;
+
+    @Field(() => Int)
+    pages: number;
+
+    @Field(() => Int)
+    publisherId: number;
 }
